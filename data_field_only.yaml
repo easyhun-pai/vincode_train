@@ -1,0 +1,17 @@
+# 현장 데이터만 사용하는 구성 (A/B 실험용).
+#
+# 가설: 도메인이 다른 v1(컬러)을 빼면 spurious 패턴이 사라져 오탐이 줄어들까?
+# 결과(예시 실측): v1 포함 대비 precision 0.71 -> 0.91, 단 recall 0.86 -> 0.72.
+#   -> 미탐이 치명적인 용도(1차 ROI 게이트)에는 부적합. README 의 '실험 기록' 참고.
+#
+# data_combined.yaml 과 val/test 는 동일해야 공정 비교가 된다. train 에서만 v1 을 뺀다.
+# 경로는 --data-root (기본: ./data_exist) 기준 상대경로.
+train:
+  - train/images/v2_visolabel
+val:
+  - valid/images/v2_visolabel
+test:
+  - test/images/v2_visolabel
+
+nc: 1
+names: ['Barcode Sticker']

@@ -1,0 +1,85 @@
+# ─────────────────────────────────────────────────────────────
+# VINCODE_TRAIN
+# 코드/설정만 버전관리. 데이터셋·모델 가중치·학습 산출물은 로컬 전용.
+#
+# 주의: .gitignore 는 줄 끝(인라인) 주석을 지원하지 않는다.
+#       "data_exist/  # 설명" 처럼 쓰면 패턴 전체가 깨져 아무것도 무시되지 않는다.
+#       설명은 반드시 별도 줄에 둘 것.
+# ─────────────────────────────────────────────────────────────
+
+# ── 데이터셋 (수 GB) ──
+# data_exist: 누적 학습셋 / data_new: 작업 중 배치
+# data<YYMMDD>: 날짜 배치 (data260701 등)
+data_exist/
+data_new/
+data[0-9]*/
+
+# 원본영상·구작업 보관, 검수 작업 폴더
+_etc/
+**/_etc/
+**/originVideo/
+**/visolabel/
+**/shots/
+
+# ── 모델 가중치 ──
+# Git LFS 로 관리할 거면 아래 블록을 지우고 .gitattributes 를 쓸 것
+_model_/
+*.pt
+*.onnx
+*.engine
+*.torchscript
+
+# ── 학습 / 추론 산출물 ──
+# output*: "output c=0.5" 같은 실험 출력 폴더
+runs/
+output*/
+wandb/
+lightning_logs/
+
+# ── 런타임 생성물 ──
+# .cache/: train_vincode.py 가 만드는 경로 해석본 yaml
+# *.cache: ultralytics 라벨 캐시
+.cache/
+*.cache
+
+# ── 미디어 (실수로 대용량 커밋 방지) ──
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.jpg
+*.jpeg
+*.png
+*.bmp
+*.tif
+*.tiff
+*.webp
+
+# 단, 문서용 이미지는 허용 (README 스크린샷 등)
+!docs/**
+!assets/**
+
+# ── Python ──
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+.pytest_cache/
+
+# ── IDE / OS ──
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── 로컬 전용 설정 ──
+.env
+.claude/settings.local.json

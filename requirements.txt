@@ -1,0 +1,8 @@
+# torch 는 CUDA 버전에 맞춰 먼저 설치할 것 (https://pytorch.org/get-started/locally/)
+#   예) pip install torch --index-url https://download.pytorch.org/whl/cu124
+torch>=2.0
+
+ultralytics>=8.3
+opencv-python>=4.8
+numpy>=1.24
+PyYAML>=6.0
