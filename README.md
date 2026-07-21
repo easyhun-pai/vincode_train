@@ -34,28 +34,32 @@
 
 ```
 .
-├── prepare_frames.py     # 영상 → 학습후보 프레임 선별·오버레이 제거
-├── auto_label.py         # 기존 모델로 사전 라벨(.txt) 생성 → VisoLabel 검수용
-├── prepare_split.py      # 검수 끝난 배치를 세션 단위로 학습셋에 배치
-├── train_vincode.py      # fine-tune + test 평가
-├── data_combined.yaml    # 학습셋 구성 (v1 + 현장)
-├── data_field_only.yaml  # 학습셋 구성 (현장만) — A/B 실험용
+├── scripts/
+│   ├── prepare_frames.py     # 영상 → 학습후보 프레임 선별·오버레이 제거
+│   ├── auto_label.py         # 기존 모델로 사전 라벨(.txt) 생성 → VisoLabel 검수용
+│   ├── prepare_split.py      # 검수 끝난 배치를 세션 단위로 학습셋에 배치
+│   ├── train_vincode.py      # fine-tune + test 평가
+│   ├── review_compare.py     # 두 모델 비교 프레임을 사람이 정답 판정(unseen 영상용)
+│   └── report_compare.py     # 판정 → 성능표 PNG + 판정 얹은 영상
+├── docs/                     # 분석 산출물 (성능표 등)
+├── data_combined.yaml        # 학습셋 구성 (v1 + 현장)
+├── data_field_only.yaml      # 학습셋 구성 (현장만) — A/B 실험용
 └── requirements.txt
 ```
 
 아래는 **gitignore 대상**(각자 로컬에 준비):
 
 ```
-data_exist/       누적 학습셋. {train,valid,test}/{images,labels}/<버킷>/ 구조
-data<YYMMDD>/     신규 촬영 배치. images/ labels/ visolabel/
-_model_/          모델 가중치 (*.pt)
+data/<YYMMDD>/    날짜별 촬영 배치. images/ labels/ visolabel/
+data/dataset/     누적 학습셋. {train,valid,test}/{images,labels}/<버킷>/ 구조
+_model_/          모델 가중치. 배포 모델 vincode_v4.pt 만 저장소 포함, 나머지는 로컬
 runs/             학습 산출물
 ```
 
 ### 데이터 레이아웃
 
 ```
-data_exist/
+data/dataset/
 ├── train/images/v1_roboflow/     ├── train/labels/v1_roboflow/
 ├── train/images/v2_visolabel/    ├── train/labels/v2_visolabel/
 ├── valid/images/v2_visolabel/    ├── valid/labels/v2_visolabel/
@@ -83,7 +87,7 @@ pip install -r requirements.txt
 ### 1. 영상 → 학습후보 프레임
 
 ```bash
-python prepare_frames.py --input <영상폴더> --output data_new/frames_for_label
+python scripts/prepare_frames.py --input <영상폴더> --output data/260619/frames_for_label
 ```
 
 수만 프레임 중 대부분은 빈 화면이라 그대로 라벨링할 수 없다. 이 스크립트는:
@@ -98,7 +102,7 @@ python prepare_frames.py --input <영상폴더> --output data_new/frames_for_lab
 ### 2. 사전 라벨 생성
 
 ```bash
-python auto_label.py --batch data260701
+python scripts/auto_label.py --batch data/260701
 ```
 
 기존 모델로 추론해 `.txt` 를 만들어 두면 VisoLabel 에서 **박스가 그려진 상태로** 열려
@@ -128,7 +132,7 @@ python auto_label.py --batch data260701
 ### 4. 세션 단위 배치
 
 ```bash
-python prepare_split.py --src data260701 --train-sessions s1,s2 --eval-sessions s3
+python scripts/prepare_split.py --src data/260701 --train-sessions s1,s2 --eval-sessions s3
 ```
 
 **프레임을 랜덤 분할하면 안 된다.** 같은 차량이 여러 프레임·여러 카메라에 걸쳐 찍히므로
@@ -141,9 +145,9 @@ python prepare_split.py --src data260701 --train-sessions s1,s2 --eval-sessions 
 ### 5. 학습
 
 ```bash
-python train_vincode.py --base _model_/vincode_v3.pt --name v4
-python train_vincode.py --data data_field_only.yaml --name fieldonly   # A/B
-python train_vincode.py --batch 4 --imgsz 1024                          # OOM 시
+python scripts/train_vincode.py --base _model_/vincode_v4.pt --name v5   # 최신 모델에서 이어학습
+python scripts/train_vincode.py --data data_field_only.yaml --name fieldonly   # A/B
+python scripts/train_vincode.py --batch 4 --imgsz 1024                          # OOM 시
 ```
 
 - **증분 학습보다 전체 재학습**을 권한다. 최신 모델에서 warm-start 하되 데이터는 전부 넣는다.

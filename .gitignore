@@ -7,14 +7,11 @@
 #       설명은 반드시 별도 줄에 둘 것.
 # ─────────────────────────────────────────────────────────────
 
-# ── 데이터셋 (수 GB) ──
-# data_exist: 누적 학습셋 / data_new: 작업 중 배치
-# data<YYMMDD>: 날짜 배치 (data260701 등)
-data_exist/
-data_new/
-data[0-9]*/
+# ── 데이터 (수 GB) ──
+# data/<YYMMDD>: 날짜별 촬영 배치 / data/dataset: 누적 학습셋
+data/
 
-# 원본영상·구작업 보관, 검수 작업 폴더
+# 원본영상·구작업 보관, 검수 작업 폴더 (혹시 data/ 밖에 생겨도 무시)
 _etc/
 **/_etc/
 **/originVideo/
@@ -22,12 +19,14 @@ _etc/
 **/shots/
 
 # ── 모델 가중치 ──
-# Git LFS 로 관리할 거면 아래 블록을 지우고 .gitattributes 를 쓸 것
-_model_/
+# 배포 모델(vincode_v4.pt, 21MB)만 저장소에 포함하고 나머지는 제외.
+# 주의: '_model_/' 로 폴더째 제외하면 아래 예외(!)가 안 먹으니 파일 패턴으로만 막을 것.
+# 더 큰 모델을 올릴 거면 Git LFS + .gitattributes 를 쓸 것.
 *.pt
 *.onnx
 *.engine
 *.torchscript
+!_model_/vincode_v4.pt
 
 # ── 학습 / 추론 산출물 ──
 # output*: "output c=0.5" 같은 실험 출력 폴더

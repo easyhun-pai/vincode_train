@@ -5,7 +5,7 @@
 #   -> 미탐이 치명적인 용도(1차 ROI 게이트)에는 부적합. README 의 '실험 기록' 참고.
 #
 # data_combined.yaml 과 val/test 는 동일해야 공정 비교가 된다. train 에서만 v1 을 뺀다.
-# 경로는 --data-root (기본: ./data_exist) 기준 상대경로.
+# 경로는 --data-root (기본: ./data/dataset) 기준 상대경로.
 train:
   - train/images/v2_visolabel
 val:
