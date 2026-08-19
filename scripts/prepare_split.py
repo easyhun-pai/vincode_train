@@ -10,6 +10,7 @@
                            (데이터가 적고 도메인이 다양할 때 권장)
 
 배경(빈 라벨): 과하면 모델이 '아무것도 없다'를 학습해 recall 이 떨어진다.
+  recall 이 우선이고 오탐은 디코더가 걸러 저비용이라 배경은 적게 유지 -> 기본 --bg-ratio 0.5.
   --bg-ratio 로 양성 대비 상한을 둔다(배경 풀이 그보다 적으면 전부 포함).
 
 사용:
@@ -120,7 +121,8 @@ def main():
     ap.add_argument("--group-re", default=r"(s\d+)_(v\d+)", help="[stratify] (세션,차량) 2그룹 정규식")
     ap.add_argument("--val-frac", type=float, default=0.2, help="[stratify] 세션별 val 비율")
     # 공통
-    ap.add_argument("--bg-ratio", type=float, default=2.0, help="배경 = 양성 * 이 값 (recall 보호)")
+    ap.add_argument("--bg-ratio", type=float, default=0.5,
+                    help="배경 = 양성 * 이 값 (상한). recall 우선+오탐 저비용 구조라 낮게 유지(기본 0.5)")
     ap.add_argument("--seed", type=int, default=42)
     args = ap.parse_args()
 

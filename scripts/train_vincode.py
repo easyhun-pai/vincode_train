@@ -60,6 +60,8 @@ def main():
     ap.add_argument("--patience", type=int, default=50, help="개선 없으면 조기 종료")
     ap.add_argument("--device", default=0)
     ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--hsv-v", type=float, default=0.4,
+                    help="밝기 증강 폭. 어두운 이미지 강건성 올리려면 0.5~0.55")
     args = ap.parse_args()
 
     base = (ROOT / args.base) if not Path(args.base).is_absolute() else Path(args.base)
@@ -109,7 +111,7 @@ def main():
         flipud=0.0,
         hsv_h=0.0,          # 흑백 -> 색조 무의미
         hsv_s=0.0,          # 흑백 -> 채도 무의미
-        hsv_v=0.4,          # 밝기 변화(조명/날씨/역광)만 — 미탐 줄이는 데 유효
+        hsv_v=args.hsv_v,   # 밝기 변화(조명/날씨/역광) — 어두운 이미지 강건성 (--hsv-v)
         translate=0.1,      # 차량 좌우 위치 변동
         scale=0.6,          # 거리별 크기 변동 + 근거리 차량은 VIN 이 더 큼 (0.4~1.6배)
         erasing=0.2,        # 부분 가림(먼지/반사) 약하게. 소형객체라 과하면 라벨 노이즈
