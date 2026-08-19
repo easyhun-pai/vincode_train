@@ -22,11 +22,13 @@ train:
   - test/images/v1_roboflow
   - train/images/v2_visolabel
   - train/images/v4_260701
+  - train/images/v5_260731
 val:
   - valid/images/v2_visolabel
   - valid/images/v4_260701
 test:
-  - test/images/v2_visolabel
+  - test/images/v2clean      # v2_visolabel 에서 고정배경 오탐 유발 배경 17장 제외한 양성만
+  - test/images/v5_260731
 
 nc: 1
 names: ['Barcode Sticker']
