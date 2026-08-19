@@ -27,6 +27,7 @@ _etc/
 *.engine
 *.torchscript
 !_model_/vincode_v4.pt
+!_model_/vin260811.pt
 
 # ── 학습 / 추론 산출물 ──
 # output*: "output c=0.5" 같은 실험 출력 폴더
